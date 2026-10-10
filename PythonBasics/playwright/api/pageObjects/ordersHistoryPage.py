@@ -1,6 +1,6 @@
 from playwright.sync_api import expect
 
-from .orderDetailsPage import OrderDetailsPage
+from pageObjects.orderDetailsPage import OrderDetailsPage
 
 
 class OrdersHistoryPage:

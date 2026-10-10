@@ -1,11 +1,14 @@
+import os
 import time
 
 import pytest
 from playwright.sync_api import Page, Playwright, expect
 from utils.apiBase import APIUtils
 
-emailAddressValue = "uncleshanie300@gmail.com"
-passwordValue = "Password32112345"
+from utils.credentials import primary_user
+
+emailAddressValue = primary_user()["userEmail"]
+passwordValue = primary_user()["userPassword"]
 fakePayLoadResponse = {"data":[],"message":"No Orders"}
 
  #=> api call from browser -> api call contact server return back response back to browser -> browser use response to generate html
@@ -67,7 +70,7 @@ def test_MockRequestTryingToStealAnotherPersonOrderDetails(page:Page):
 def test_SessionStorage(playwright:Playwright):
     api_utils = APIUtils()
     authToken = api_utils.getToken(playwright)
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=os.getenv("CI") == "true")
     context = browser.new_context()
     page = context.new_page()
     page.add_init_script(f"""localStorage.setItem("token", '{authToken}');""")

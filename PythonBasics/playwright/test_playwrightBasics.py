@@ -1,18 +1,20 @@
+import os
 import time
 
 import pytest
 from playwright.sync_api import Page
 from playwright.sync_api import expect,Playwright
 
-
+@pytest.mark.smoke
 #Firefox use that and headed mode
 def test_playwrightBasics(playwright):
     # if you use chromium you are testing in edge and in chrome, default in headless mode
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=os.getenv("CI") == "true")
     context = browser.new_context()
     page = context.new_page()
     page.goto("https://www.google.com")
 
+@pytest.mark.smoke
 #chromium engine in headless mode on a single context
 def test_playwrightShortCut(page:Page):
     page.goto("https://www.google.com")
@@ -43,7 +45,7 @@ def test_wrongLoginCredentials(page:Page):
 
 @pytest.mark.firefox
 def test_runningTestUsingFireFox(playwright):
-    fireFoxBrowser = playwright.firefox.launch(headless=False)
+    fireFoxBrowser = playwright.firefox.launch(headless=os.getenv("CI") == "true")
     context = fireFoxBrowser.new_context()
     page = context.new_page()
 

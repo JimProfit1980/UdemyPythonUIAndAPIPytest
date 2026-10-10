@@ -1,9 +1,8 @@
+import os
 import time
-from _pyrepl.commands import accept
 
 import pytest
 from playwright.sync_api import Page, expect
-
 
 @pytest.mark.hideplaceholder
 def test_hidePlaceholder(page:Page):
@@ -25,7 +24,7 @@ def test_showPlaceholder(page:Page):
 
 @pytest.mark.alert
 def test_alertHandling(playwright):
-    browser = playwright.firefox.launch(headless=False)
+    browser = playwright.firefox.launch(headless=os.getenv("CI") == "true")
     page = browser.new_page()
     page.on("dialog", lambda dialog: (print(dialog.message), dialog.accept()))
     page.goto("https://rahulshettyacademy.com/AutomationPractise")

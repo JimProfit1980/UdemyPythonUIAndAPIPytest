@@ -1,12 +1,9 @@
-import page
-
-from .dashboard import DashboardPage
+from pageObjects.dashboard import DashboardPage
 
 
 class LoginPage:
 
-
-    def __init__(self, page):
+    def __init__(self,page):
         self.page = page
 
     def navigate(self):

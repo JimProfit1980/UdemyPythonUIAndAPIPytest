@@ -1,6 +1,6 @@
 from playwright.sync_api import expect
 
-from .ordersHistoryPage import OrdersHistoryPage
+from pageObjects.ordersHistoryPage import  OrdersHistoryPage
 
 
 class DashboardPage:
@@ -17,6 +17,10 @@ class DashboardPage:
         ordersHistoryPage = OrdersHistoryPage(self.page)
         expect(ordersHistoryPage.page.get_by_role("heading", name="Your Orders")).to_be_visible()
         return ordersHistoryPage
+
+    def validateProductDisplayed(self,productName):
+        product = self.page.locator(".card-body h5 b").filter(has_text=productName)
+        expect(product).to_be_visible()
 
 
 

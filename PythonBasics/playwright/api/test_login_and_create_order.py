@@ -1,13 +1,17 @@
+import os
 from utils.apiBase import APIUtils
 import pytest
 from playwright.sync_api import Playwright, expect
 from utils.apiBase import APIUtils
-emailAddressValue = "uncleshanie300@gmail.com"
-passwordValue = "Password32112345"
+from utils.credentials import primary_user
 
+emailAddressValue = primary_user()["userEmail"]
+passwordValue = primary_user()["userPassword"]
+
+@pytest.mark.smoke
 @pytest.mark.end2endwebapi
 def test_end2EndWebApi(playwright:Playwright):
-    browserContext = playwright.chromium.launch(headless=False)
+    browserContext = playwright.chromium.launch(headless=os.getenv("CI") == "true")
     newContext = browserContext.new_context()
     page = newContext.new_page()
 

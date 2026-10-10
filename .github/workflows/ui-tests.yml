@@ -1,0 +1,48 @@
+name: UI Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium firefox
+
+      - name: Write credentials from secret
+        env:
+          CREDENTIALS_JSON: ${{ secrets.CREDENTIALS_JSON }}
+        run: |
+          if [ -z "$CREDENTIALS_JSON" ]; then
+            echo "::error::Repository secret CREDENTIALS_JSON is not set (Settings > Secrets and variables > Actions)"
+            exit 1
+          fi
+          printf '%s' "$CREDENTIALS_JSON" > PythonBasics/playwright/api/data/credentials.json
+          # Mask each password individually so it is redacted if a test prints it
+          jq -r '.user_credentials[].userPassword' PythonBasics/playwright/api/data/credentials.json \
+            | while read -r pw; do echo "::add-mask::$pw"; done
+
+      - name: Run tests
+        run: pytest --html=report.html --self-contained-html
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: report.html

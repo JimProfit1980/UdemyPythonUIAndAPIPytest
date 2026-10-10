@@ -1,0 +1,12 @@
+# Real test credentials - never commit. Copy credentials.example.json to create your own.
+PythonBasics/playwright/api/data/credentials.json
+
+# Python / pytest
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Test reports
+report.html
+assets/
+test-results/
